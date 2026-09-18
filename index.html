@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECOSIP — Beli Kopi, Bawa Tumbler, Kumpulin Coin</title>
+<meta name="description" content="Website member ECOSIP: daftar, kumpulkan coin tiap beli kopi bawa tumbler, dan tukar reward.">
+<meta name="theme-color" content="#2F5233">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%232F5233'/%3E%3Ctext x='50' y='66' font-size='55' text-anchor='middle' fill='%23C89B3C'%3E%E2%98%95%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFEAD9;
+    --card:#FFFFFF;
+    --ink:#1E2A1F;
+    --ink-soft:#57624F;
+    --green:#2F5233;
+    --green-deep:#1F3B23;
+    --green-pale:#E3ECDD;
+    --gold:#C89B3C;
+    --gold-deep:#A57D28;
+    --line:rgba(30,42,31,0.14);
+    --danger:#A5432F;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Inter', sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.disp{ font-family:'Poppins', sans-serif; font-weight:600; letter-spacing:-0.01em; }
+  a{ color:inherit; }
+  button{ font-family:'Inter', sans-serif; cursor:pointer; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 22px; }
+  @media (max-width:640px){ .wrap{ padding:0 16px; } }
+
+  /* ---------- navbar ---------- */
+  header{ position:sticky; top:0; z-index:50; background:rgba(239,234,217,0.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); }
+  .nav{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; flex-wrap:wrap; row-gap:10px; }
+  .logo{ font-family:'Poppins',sans-serif; font-weight:700; font-size:1.2rem; color:var(--green-deep); display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .logo .dot{ width:9px; height:9px; border-radius:50%; background:var(--gold); }
+  .nav-links{ display:flex; gap:20px; list-style:none; margin:0; padding:0; order:3; width:100%; justify-content:center; }
+  .nav-links button{ background:none; border:none; font-size:0.88rem; color:var(--ink-soft); padding:0; }
+  .nav-links button:hover{ color:var(--green-deep); }
+  .nav-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .badge-coin{ display:none; align-items:center; gap:7px; background:var(--green-pale); color:var(--green-deep); padding:7px 13px; border-radius:20px; font-size:0.85rem; font-weight:600; }
+  .badge-coin .dotcoin{ width:9px; height:9px; border-radius:50%; background:var(--gold); }
+  .kasir-link{ font-size:0.82rem; color:var(--ink-soft); text-decoration:underline; background:none; border:none; }
+  @media (min-width:821px){ .nav-links{ order:2; width:auto; } }
+  @media (max-width:480px){ .nav-links{ gap:14px; } .nav-links button{ font-size:0.82rem; } }
+
+  /* ---------- buttons ---------- */
+  .btn{ display:inline-block; padding:11px 20px; border-radius:8px; border:none; font-size:0.92rem; font-weight:600; text-align:center; text-decoration:none; }
+  .btn-primary{ background:var(--green); color:#fff; }
+  .btn-primary:hover{ background:var(--green-deep); }
+  .btn-outline{ background:none; border:1px solid var(--green); color:var(--green); }
+  .btn-outline:hover{ background:var(--green-pale); }
+  .btn-gold{ background:var(--gold); color:#3A2B0A; }
+  .btn-gold:hover{ background:var(--gold-deep); color:#fff; }
+  .btn-sm{ padding:8px 14px; font-size:0.83rem; border-radius:6px; }
+  .btn-ghost{ background:none; border:none; color:var(--ink-soft); text-decoration:underline; font-size:0.85rem; padding:0; }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; }
+  .btn.busy{ opacity:0.65; pointer-events:none; }
+  .btn-block{ display:block; width:100%; }
+
+  /* ---------- page sections ---------- */
+  .page{ display:none; }
+  .page.active{ display:block; }
+
+  /* HOME */
+  .hero{ padding:64px 0 50px; }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:44px; align-items:center; }
+  @media (max-width:860px){ .hero-grid{ grid-template-columns:1fr; } }
+  .eyebrow-note{ font-size:0.88rem; color:var(--ink-soft); border-left:2px solid var(--gold); padding-left:12px; margin-bottom:20px; }
+  h1.hero-title{ font-size:clamp(2.1rem,4.6vw,3.1rem); line-height:1.1; margin:0 0 18px; color:var(--green-deep); }
+  .hero-sub{ font-size:1.05rem; color:var(--ink-soft); max-width:46ch; margin-bottom:28px; }
+  .btn-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .rate-note{ display:inline-flex; gap:8px; align-items:center; background:var(--green-pale); color:var(--green-deep); padding:8px 14px; border-radius:20px; font-size:0.85rem; font-weight:600; margin-top:22px; }
+  .rate-note .dotcoin{ width:9px; height:9px; border-radius:50%; background:var(--gold); }
+
+  .hero-visual-card{ background:var(--green-deep); border-radius:18px; padding:26px; color:#fff; }
+  .hvc-label{ font-size:0.78rem; opacity:0.7; margin-bottom:10px; }
+  .hvc-name{ font-family:'Poppins',sans-serif; font-size:1.05rem; margin-bottom:10px; }
+  .hvc-coin{ display:flex; align-items:center; gap:9px; font-family:'Poppins',sans-serif; font-size:1.7rem; font-weight:700; margin-bottom:18px; }
+  .hvc-row{ display:flex; justify-content:space-between; font-size:0.85rem; padding:9px 0; border-top:1px solid rgba(255,255,255,0.15); opacity:0.9; }
+  .hvc-plus{ color:#BFE3C4; font-weight:600; }
+  .hvc-minus{ color:#E8B7AE; font-weight:600; }
+
+  section{ padding:52px 0; border-top:1px solid var(--line); }
+  .section-head{ max-width:56ch; margin-bottom:34px; }
+  .section-head p.k{ font-size:0.92rem; color:var(--gold-deep); margin:0 0 8px; font-weight:600; }
+  .section-head h2{ font-size:clamp(1.5rem,3vw,2rem); margin:0 0 8px; color:var(--green-deep); }
+  .section-head .desc{ color:var(--ink-soft); }
+
+  .benefit-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:820px){ .benefit-grid{ grid-template-columns:1fr; } }
+  .benefit-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; }
+  .benefit-card h3{ font-size:1.02rem; margin:0 0 8px; }
+  .benefit-card p{ font-size:0.9rem; color:var(--ink-soft); margin:0; }
+
+  .flow{ display:flex; flex-direction:column; }
+  .flow-step{ display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line); }
+  .flow-step:first-child{ border-top:none; }
+  .flow-num{ width:30px; height:30px; border-radius:50%; background:var(--green-pale); color:var(--green-deep); font-family:'Poppins',sans-serif; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .flow-step h3{ font-size:1rem; margin:0 0 3px; }
+  .flow-step p{ margin:0; font-size:0.88rem; color:var(--ink-soft); }
+
+  .reward-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  @media (max-width:860px){ .reward-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:480px){ .reward-grid{ grid-template-columns:1fr; } }
+  .reward-tile{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .reward-tile h3{ font-size:0.96rem; margin:0 0 6px; }
+  .reward-tile .rc{ font-size:0.82rem; color:var(--gold-deep); font-weight:600; }
+
+  /* AUTH pages */
+  .auth-wrap{ min-height:70vh; display:flex; align-items:center; justify-content:center; padding:60px 0; }
+  .auth-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:34px; width:100%; max-width:400px; }
+  .auth-card h2{ text-align:center; margin:0 0 6px; color:var(--green-deep); }
+  .auth-card p.sub{ text-align:center; color:var(--ink-soft); font-size:0.9rem; margin:0 0 24px; }
+  .field{ margin-bottom:15px; }
+  label{ display:block; font-size:0.83rem; color:var(--ink-soft); margin-bottom:5px; }
+  input, select{ width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:8px; font-size:0.94rem; background:#fff; color:var(--ink); font-family:'Inter',sans-serif; }
+  input:focus, select:focus{ outline:2px solid var(--green); outline-offset:1px; }
+  .form-error{ font-size:0.82rem; color:var(--danger); margin:-6px 0 12px; display:none; }
+  .auth-alt{ text-align:center; font-size:0.86rem; color:var(--ink-soft); margin-top:16px; }
+  .auth-alt button{ background:none; border:none; color:var(--green); font-weight:600; text-decoration:underline; padding:0; font-size:0.86rem; }
+
+  /* DASHBOARD */
+  .dash-shell{ padding:36px 0 70px; }
+  .dash-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:10px; }
+  .dash-top h1{ font-size:1.5rem; margin:0; color:var(--green-deep); }
+  .dash-layout{ display:grid; grid-template-columns:220px 1fr; gap:28px; align-items:start; }
+  @media (max-width:760px){ .dash-layout{ grid-template-columns:1fr; } }
+  .dash-nav{ display:flex; flex-direction:column; gap:6px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px; }
+  .dash-nav button{ text-align:left; background:none; border:none; padding:10px 12px; border-radius:8px; font-size:0.92rem; color:var(--ink-soft); }
+  .dash-nav button.active{ background:var(--green-pale); color:var(--green-deep); font-weight:600; }
+  .dash-tab{ display:none; }
+  .dash-tab.active{ display:block; }
+
+  .coin-card{ background:linear-gradient(135deg, var(--green), var(--green-deep)); color:#fff; border-radius:16px; padding:26px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+  .coin-label{ font-size:0.85rem; opacity:0.85; margin-bottom:4px; }
+  .coin-value{ font-family:'Poppins',sans-serif; font-size:2.2rem; font-weight:700; display:flex; align-items:center; gap:9px; }
+  .coin-icon{ width:26px; height:26px; border-radius:50%; background:var(--gold); display:inline-block; }
+  .stat-row{ display:flex; gap:24px; }
+  .stat-row div{ text-align:right; }
+  .stat-row .sv{ font-family:'Poppins',sans-serif; font-size:1.2rem; font-weight:600; }
+  .stat-row .sl{ font-size:0.78rem; opacity:0.8; }
+
+  table.hist-table{ width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  table.hist-table th, table.hist-table td{ text-align:left; padding:12px 16px; font-size:0.88rem; border-bottom:1px solid var(--line); }
+  table.hist-table th{ color:var(--ink-soft); font-weight:600; background:var(--green-pale); }
+  table.hist-table tr:last-child td{ border-bottom:none; }
+  .h-coin.plus{ color:var(--green); font-weight:600; }
+  .h-coin.minus{ color:var(--danger); font-weight:600; }
+  .empty-note{ color:var(--ink-soft); font-size:0.88rem; padding:14px; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+
+  .reward-card-full{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; gap:14px; }
+  .reward-card-full h3{ font-size:0.98rem; margin:0 0 4px; }
+  .reward-card-full p{ font-size:0.83rem; color:var(--ink-soft); margin:0; }
+
+  .profile-box{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:420px; }
+
+  /* KASIR page */
+  .kasir-shell{ padding:40px 0 70px; }
+  .kasir-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px; max-width:480px; }
+  .kasir-card h1{ margin:0 0 6px; font-size:1.3rem; color:var(--green-deep); }
+  .kasir-card p.desc{ color:var(--ink-soft); margin:0 0 20px; font-size:0.9rem; }
+  .row-2{ display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end; }
+  .kasir-member{ margin-top:14px; padding:14px; border-radius:10px; border:1px solid var(--line); display:none; }
+  .kasir-member .kmn{ font-weight:600; }
+  .kasir-member .kms{ font-size:0.85rem; color:var(--ink-soft); }
+  .kasir-result{ margin-top:16px; padding:14px; border-radius:10px; background:var(--green-pale); color:var(--green-deep); font-size:0.9rem; display:none; }
+  .kasir-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+  .kasir-login-note{ margin-top:18px; padding-top:16px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:0.8rem; }
+  .guest-only{ display:inline-flex; }
+
+  @media (max-width:640px){
+    header{ position:relative; }
+    .nav{ padding:12px 0; row-gap:12px; }
+    .nav-right{ gap:7px; margin-left:auto; }
+    .nav-links{ order:3; overflow-x:auto; justify-content:flex-start; gap:20px; padding:9px 2px 1px; border-top:1px solid var(--line); }
+    .kasir-link{ min-height:36px; padding:7px 3px; }
+    .hero{ padding:38px 0 34px; }
+    .hero-grid{ gap:30px; }
+    h1.hero-title{ font-size:2rem; }
+    section{ padding:40px 0; }
+    .auth-wrap{ min-height:auto; padding:30px 0 48px; align-items:flex-start; }
+    .auth-card,.kasir-card{ padding:22px 18px; border-radius:13px; }
+    .kasir-shell{ padding:28px 0 52px; }
+    .row-2{ grid-template-columns:1fr; }
+    .row-2 .btn{ width:100%; }
+    .dash-shell{ padding:28px 0 52px; }
+    .dash-nav{ flex-direction:row; overflow-x:auto; padding:7px; }
+    .dash-nav button{ flex:0 0 auto; white-space:nowrap; }
+    .coin-card{ padding:21px 18px; }
+    .stat-row{ width:100%; justify-content:space-between; gap:12px; padding-top:14px; border-top:1px solid rgba(255,255,255,.18); }
+    .stat-row div{ text-align:left; }
+    .reward-card-full{ align-items:flex-start; }
+    table.hist-table,table.hist-table thead,table.hist-table tbody,table.hist-table tr,table.hist-table th,table.hist-table td{ display:block; }
+    table.hist-table thead{ display:none; }
+    table.hist-table tr{ padding:12px 14px; border-bottom:1px solid var(--line); }
+    table.hist-table tr:last-child{ border-bottom:none; }
+    table.hist-table td{ padding:2px 0; border:0; }
+    table.hist-table td:first-child{ font-size:.76rem; color:var(--ink-soft); }
+  }
+
+  footer{ border-top:1px solid var(--line); padding:28px 0; text-align:center; color:var(--ink-soft); font-size:0.82rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo" onclick="showPage('home')"><span class="dot"></span>ECOSIP</div>
+    <ul class="nav-links">
+      <li><button onclick="showPage('home')">Beranda</button></li>
+      <li><button onclick="goToSection('cara-kerja')">Cara Kerja</button></li>
+      <li><button onclick="goToSection('reward-preview')">Reward</button></li>
+    </ul>
+    <div class="nav-right">
+      <div class="badge-coin" id="navCoinBadge"><span class="dotcoin"></span><span id="navCoinValue">0</span> coin</div>
+      <span id="authButtons" class="guest-only">
+        <button class="btn btn-outline btn-sm" onclick="showPage('login')">Masuk</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('daftar')">Daftar</button>
+      </span>
+      <span id="memberButtons" style="display:none;">
+        <button class="btn btn-outline btn-sm" onclick="openDashboard()">Dashboard</button>
+        <button class="btn btn-primary btn-sm" onclick="logout()">Keluar</button>
+      </span>
+      <button class="kasir-link" onclick="showPage('kasir')">Kasir</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HOME ============ -->
+<div class="page active" id="page-home">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow-note">Program member ECOSIP</p>
+        <h1 class="hero-title">Beli kopi, bawa tumbler sendiri, kumpulin coin.</h1>
+        <p class="hero-sub">Daftar sekali lewat website ini, dapat dashboard sendiri buat pantau saldo coin, riwayat pembelian, dan tukar reward tiap kali kamu bawa tumbler saat beli kopi.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary guest-only" onclick="showPage('daftar')">Daftar Member</button>
+          <button class="btn btn-outline" onclick="goToSection('cara-kerja')">Lihat Cara Kerja</button>
+        </div>
+        <div class="rate-note"><span class="dotcoin"></span>Rp1.000 = 1 Coin</div>
+      </div>
+      <div class="hero-visual-card">
+        <div class="hvc-label">Contoh dashboard member</div>
+        <div class="hvc-name">Halo, Yoshi</div>
+        <div class="hvc-coin"><span class="coin-icon"></span>128 coin</div>
+        <div class="hvc-row"><span>Beli kopi + bawa tumbler</span><span class="hvc-plus">+18</span></div>
+        <div class="hvc-row"><span>Tukar reward: Upsize gratis</span><span class="hvc-minus">-15</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <p class="k">Kenapa ikutan</p>
+        <h2>Sekali bawa tumbler, dapat dua manfaat</h2>
+        <p class="desc">Bantu kurangi sampah sekali pakai, sambil ngumpulin reward.</p>
+      </div>
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <h3>Ramah lingkungan</h3>
+          <p>Tiap kamu bawa tumbler sendiri, kamu ikut mengurangi sampah gelas sekali pakai.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Coin otomatis</h3>
+          <p>Nggak perlu catat manual — saldo coin langsung bertambah tiap transaksi lewat kasir.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Reward nyata</h3>
+          <p>Coin bisa ditukar dengan diskon, upsize, kopi gratis, sampai tumbler eksklusif.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cara-kerja">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="k">Cara Kerja</p>
+        <h2>Dari scan QR sampai tukar reward</h2>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-num">1</div><div><h3>Scan QR ECOSIP</h3><p>Buka website ECOSIP lewat QR yang ada di meja atau kasir.</p></div></div>
+        <div class="flow-step"><div class="flow-num">2</div><div><h3>Daftar member</h3><p>Isi nama dan nomor HP, langsung dapat dashboard sendiri.</p></div></div>
+        <div class="flow-step"><div class="flow-num">3</div><div><h3>Beli kopi, bawa tumbler</h3><p>Pesan kopi seperti biasa, pakai tumbler sendiri saat beli.</p></div></div>
+        <div class="flow-step"><div class="flow-num">4</div><div><h3>Kasir input nominal</h3><p>Kasir memasukkan nominal pembelian ke sistem.</p></div></div>
+        <div class="flow-step"><div class="flow-num">5</div><div><h3>Coin otomatis masuk</h3><p>Saldo coin bertambah otomatis ke akun member, sesuai kurs Rp1.000 = 1 Coin.</p></div></div>
+        <div class="flow-step"><div class="flow-num">6</div><div><h3>Tukar reward</h3><p>Kumpulkan coin lalu tukar dengan reward pilihan di dashboard.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reward-preview">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="k">Reward</p>
+        <h2>Coin kamu bisa ditukar jadi ini</h2>
+      </div>
+      <div class="reward-grid" id="rewardPreviewGrid"></div>
+      <div style="margin-top:26px;">
+        <button class="btn btn-primary guest-only" onclick="showPage('daftar')">Daftar &amp; Mulai Ngumpulin Coin</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ DAFTAR ============ -->
+<div class="page" id="page-daftar">
+  <div class="wrap auth-wrap">
+    <div class="auth-card">
+      <h2>Daftar Member</h2>
+      <p class="sub">Isi data di bawah buat dapat akun ECOSIP kamu.</p>
+      <div class="field">
+        <label for="d-nama">Nama</label>
+        <input type="text" id="d-nama" placeholder="Nama lengkap">
+      </div>
+      <div class="field">
+        <label for="d-hp">No. HP</label>
+        <input type="tel" id="d-hp" placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15" autocomplete="tel">
+      </div>
+      <p class="form-error" id="d-error">Nama dan No. HP wajib diisi, dan nomor belum boleh terdaftar.</p>
+      <button class="btn btn-primary btn-block" onclick="daftarMember(this)">Daftar &amp; Buka Dashboard</button>
+      <div class="auth-alt">Sudah punya akun? <button onclick="showPage('login')">Masuk di sini</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div class="page" id="page-login">
+  <div class="wrap auth-wrap">
+    <div class="auth-card">
+      <h2>Masuk Member</h2>
+      <p class="sub">Masukkan nomor HP yang kamu pakai waktu daftar.</p>
+      <div class="field">
+        <label for="l-hp">No. HP terdaftar</label>
+        <input type="tel" id="l-hp" placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15" autocomplete="tel">
+      </div>
+      <p class="form-error" id="l-error">Nomor belum terdaftar. Coba daftar dulu.</p>
+      <button class="btn btn-primary btn-block" onclick="loginMember(this)">Masuk</button>
+      <div class="auth-alt">Belum punya akun? <button onclick="showPage('daftar')">Daftar di sini</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="page" id="page-dashboard">
+  <div class="wrap dash-shell">
+    <div class="dash-top">
+      <h1 id="db-nama">Halo, Member</h1>
+    </div>
+
+    <div class="coin-card">
+      <div>
+        <div class="coin-label">Saldo ECOSIP Coin</div>
+        <div class="coin-value"><span class="coin-icon"></span><span id="db-saldo">0</span></div>
+      </div>
+      <div class="stat-row">
+        <div><div class="sv" id="db-total-trx">0</div><div class="sl">Total transaksi</div></div>
+        <div><div class="sv" id="db-total-tukar">0</div><div class="sl">Reward ditukar</div></div>
+      </div>
+    </div>
+
+    <div class="dash-layout">
+      <div class="dash-nav">
+        <button class="active" data-tab="ringkasan" onclick="dashTab('ringkasan')">Ringkasan</button>
+        <button data-tab="riwayat" onclick="dashTab('riwayat')">Riwayat Pembelian</button>
+        <button data-tab="reward" onclick="dashTab('reward')">Tukar Reward</button>
+        <button data-tab="profil" onclick="dashTab('profil')">Profil</button>
+      </div>
+
+      <div>
+        <div class="dash-tab active" id="tab-ringkasan">
+          <div class="section-head" style="margin-bottom:16px;">
+            <h2 style="font-size:1.15rem;">Aktivitas terbaru</h2>
+          </div>
+          <div id="db-history-mini"></div>
+        </div>
+
+        <div class="dash-tab" id="tab-riwayat">
+          <div id="db-history-full"></div>
+        </div>
+
+        <div class="dash-tab" id="tab-reward">
+          <div id="db-rewards"></div>
+        </div>
+
+        <div class="dash-tab" id="tab-profil">
+          <div class="profile-box">
+            <div class="field">
+              <label for="p-nama">Nama</label>
+              <input type="text" id="p-nama">
+            </div>
+            <div class="field">
+              <label for="p-hp">No. HP</label>
+              <input type="tel" id="p-hp" disabled>
+            </div>
+            <button class="btn btn-primary" onclick="simpanProfil(this)">Simpan Perubahan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KASIR ============ -->
+<div class="page" id="page-kasir">
+  <div class="wrap kasir-shell">
+    <div class="kasir-card">
+      <div id="kasirLoginPanel">
+        <h1>Masuk Kasir</h1>
+        <p class="desc">Login diperlukan agar hanya petugas yang bisa menambahkan coin member.</p>
+        <div class="field">
+          <label for="k-username">Username</label>
+          <input type="text" id="k-username" autocomplete="username" placeholder="Username kasir">
+        </div>
+        <div class="field">
+          <label for="k-password">Password</label>
+          <input type="password" id="k-password" autocomplete="current-password" placeholder="Password kasir">
+        </div>
+        <p class="form-error" id="k-login-error"></p>
+        <button class="btn btn-primary btn-block" onclick="loginKasir(this)">Masuk ke Panel Kasir</button>
+        <div class="kasir-login-note">Akses ini khusus petugas ECOSIP.</div>
+      </div>
+      <div id="kasirWorkPanel" style="display:none;">
+      <div class="kasir-head"><div><h1>Panel Kasir</h1><p class="desc">Cari member lalu masukkan nominal pembelian.</p></div><button class="btn-ghost" onclick="logoutKasir()">Keluar</button></div>
+      <div class="row-2">
+        <div class="field" style="margin-bottom:0;">
+          <label for="k-hp">No. HP member</label>
+          <input type="tel" id="k-hp" placeholder="08xxxxxxxxxx" inputmode="numeric" pattern="[0-9]*" maxlength="15">
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="cariMember(this)">Cari</button>
+      </div>
+      <div class="kasir-member" id="kasirMemberInfo"></div>
+      <div class="field" style="margin-top:16px;">
+        <label for="k-nominal">Nominal pembelian (Rp)</label>
+        <input type="number" id="k-nominal" placeholder="misal 25000" min="0" step="500">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="prosesPembelian(this)">Proses &amp; Tambah Coin</button>
+      <div class="kasir-result" id="kasirResult"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>ECOSIP — bawa tumbler, kumpulkan coin, dan nikmati reward.</footer>
+
+<script>
+  // Sesi disimpan di perangkat; data member dan transaksi tersimpan aman di server.
+  const SESSION_KEY = 'ecosip_current_phone';
+  let currentMember = null;
+  let currentPhone = null;
+  let kasirTargetPhone = null;
+
+  try{ currentPhone = localStorage.getItem(SESSION_KEY) || null; }catch(e){ currentPhone = null; }
+
+  async function api(action, payload = {}){
+    const response = await fetch('/api/ecosip', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...payload }),
+      credentials: 'same-origin'
+    });
+    const data = await response.json().catch(() => ({}));
+    if(!response.ok){
+      const error = new Error(data.error || 'Layanan sedang bermasalah. Silakan coba lagi.');
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function escapeHtml(value){
+    return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  }
+
+  function showError(element, message){
+    element.textContent = message;
+    element.style.display = 'block';
+  }
+
+  // Mencegah klik ganda (penyebab umum "error" saat daftar/masuk karena
+  // permintaan terkirim dua kali sebelum yang pertama selesai).
+  function setBusy(btn, busy){
+    if(!btn) return;
+    btn.disabled = busy;
+    btn.classList.toggle('busy', busy);
+    if(busy){ btn.dataset.label = btn.dataset.label || btn.textContent; btn.textContent = 'Memproses...'; }
+    else if(btn.dataset.label){ btn.textContent = btn.dataset.label; }
+  }
+
+  const rewards = [
+    { name: "Diskon 20% kopi berikutnya", cost: 105, desc: "Berlaku untuk 1x pembelian" },
+    { name: "Upsize gratis", cost: 195, desc: "Naik ukuran tanpa tambahan biaya" },
+    { name: "1 gelas kopi gratis", cost: 300, desc: "Pilih menu kopi reguler apa saja" },
+    { name: "Tumbler ECOSIP eksklusif", cost: 375, desc: "Edisi terbatas, selagi stok ada" }
+  ];
+
+  function showPage(id){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if(id === 'kasir') checkKasirSession();
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+
+  function goToSection(sectionId){
+    showPage('home');
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if(el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 0);
+  }
+
+  function formatTanggal(){
+    const d = new Date();
+    return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) +
+      ' ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function renderRewardPreview(){
+    const box = document.getElementById('rewardPreviewGrid');
+    box.innerHTML = rewards.map(r => `
+      <div class="reward-tile">
+        <h3>${r.name}</h3>
+        <div class="rc">${r.cost} coin</div>
+      </div>
+    `).join('');
+  }
+  renderRewardPreview();
+
+  async function daftarMember(btn){
+    const nama = document.getElementById('d-nama').value.trim();
+    const hp = document.getElementById('d-hp').value.trim();
+    const err = document.getElementById('d-error');
+    if(!nama || !hp){ showError(err, 'Nama dan No. HP wajib diisi.'); return; }
+    setBusy(btn, true);
+    try{
+      err.style.display = 'none';
+      const data = await api('register', { name: nama, phone: hp });
+      currentMember = data.member;
+      currentPhone = data.member.hp;
+      afterAuth();
+    }catch(error){ showError(err, error.message); }
+    finally{ setBusy(btn, false); }
+  }
+
+  async function loginMember(btn){
+    const hp = document.getElementById('l-hp').value.trim();
+    const err = document.getElementById('l-error');
+    if(!hp){ showError(err, 'Masukkan No. HP yang terdaftar.'); return; }
+    setBusy(btn, true);
+    try{
+      err.style.display = 'none';
+      const data = await api('login', { phone: hp });
+      currentMember = data.member;
+      currentPhone = data.member.hp;
+      afterAuth();
+    }catch(error){ showError(err, error.message); }
+    finally{ setBusy(btn, false); }
+  }
+
+  function afterAuth(){
+    try{ localStorage.setItem(SESSION_KEY, currentPhone); }catch(e){}
+    document.getElementById('authButtons').style.display = 'none';
+    document.getElementById('memberButtons').style.display = 'inline-flex';
+    document.getElementById('navCoinBadge').style.display = 'inline-flex';
+    document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'none');
+    openDashboard();
+  }
+
+  function logout(){
+    currentPhone = null;
+    currentMember = null;
+    try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+    document.getElementById('authButtons').style.display = 'inline-flex';
+    document.getElementById('memberButtons').style.display = 'none';
+    document.getElementById('navCoinBadge').style.display = 'none';
+    document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'inline-flex');
+    showPage('home');
+  }
+
+  async function openDashboard(){
+    if(!currentPhone){ showPage('login'); return; }
+    try{
+      const data = await api('get', { phone: currentPhone });
+      currentMember = data.member;
+      renderDashboard();
+      showPage('dashboard');
+    }catch(error){
+      logout();
+      const err = document.getElementById('l-error');
+      showError(err, error.message);
+      showPage('login');
+    }
+  }
+
+  function dashTab(name){
+    document.querySelectorAll('.dash-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelector('.dash-nav button[data-tab="' + name + '"]').classList.add('active');
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  function historyRowsHtml(list){
+    if(list.length === 0) return '<p class="empty-note">Belum ada transaksi.</p>';
+    return `<table class="hist-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Coin</th></tr></thead><tbody>` +
+      list.map(r => `
+        <tr>
+          <td>${escapeHtml(r.tanggal)}</td>
+          <td>${escapeHtml(r.keterangan)}</td>
+          <td class="h-coin ${r.coin >= 0 ? 'plus' : 'minus'}">${r.coin >= 0 ? '+' : ''}${r.coin}</td>
+        </tr>
+      `).join('') + `</tbody></table>`;
+  }
+
+  function renderDashboard(){
+    const m = currentMember;
+    if(!m) return;
+
+    document.getElementById('db-nama').textContent = 'Halo, ' + m.nama;
+    document.getElementById('db-saldo').textContent = m.saldo;
+    document.getElementById('navCoinValue').textContent = m.saldo;
+
+    const totalTrx = m.riwayat.filter(r => r.coin > 0).length;
+    const totalTukar = m.riwayat.filter(r => r.coin < 0).length;
+    document.getElementById('db-total-trx').textContent = totalTrx;
+    document.getElementById('db-total-tukar').textContent = totalTukar;
+
+    document.getElementById('db-history-mini').innerHTML = historyRowsHtml(m.riwayat.slice(-5));
+    document.getElementById('db-history-full').innerHTML = historyRowsHtml(m.riwayat);
+
+    document.getElementById('db-rewards').innerHTML = rewards.map((r, i) => `
+      <div class="reward-card-full">
+        <div>
+          <h3>${r.name}</h3>
+          <p>${r.desc} · ${r.cost} coin</p>
+        </div>
+        <button class="btn btn-gold btn-sm" ${m.saldo < r.cost ? 'disabled' : ''} onclick="tukarReward(${i})">Tukar</button>
+      </div>
+    `).join('');
+
+    document.getElementById('p-nama').value = m.nama;
+    document.getElementById('p-hp').value = m.hp;
+  }
+
+  async function tukarReward(i){
+    const m = currentMember;
+    const r = rewards[i];
+    if(!m || m.saldo < r.cost) return;
+    try{
+      const data = await api('redeem', { phone: currentPhone, reward: r.name, cost: r.cost });
+      currentMember = data.member;
+      renderDashboard();
+    }catch(error){ alert(error.message); }
+  }
+
+  async function simpanProfil(btn){
+    const m = currentMember;
+    if(!m) return;
+    const namaBaru = document.getElementById('p-nama').value.trim();
+    if(!namaBaru) return;
+    setBusy(btn, true);
+    try{
+      const data = await api('profile', { phone: currentPhone, name: namaBaru });
+      currentMember = data.member;
+      renderDashboard();
+    }catch(error){ alert(error.message); }
+    finally{ setBusy(btn, false); }
+  }
+
+  // ----- KASIR -----
+  function setKasirView(authenticated){
+    document.getElementById('kasirLoginPanel').style.display = authenticated ? 'none' : 'block';
+    document.getElementById('kasirWorkPanel').style.display = authenticated ? 'block' : 'none';
+    if(!authenticated) kasirTargetPhone = null;
+  }
+
+  async function checkKasirSession(){
+    try{ const data = await api('cashierStatus'); setKasirView(data.authenticated); }
+    catch(e){ setKasirView(false); }
+  }
+
+  async function loginKasir(btn){
+    const username = document.getElementById('k-username').value.trim();
+    const password = document.getElementById('k-password').value;
+    const err = document.getElementById('k-login-error');
+    if(!username || !password){ showError(err, 'Username dan password wajib diisi.'); return; }
+    setBusy(btn, true);
+    try{
+      err.style.display = 'none';
+      await api('cashierLogin', { username, password });
+      document.getElementById('k-password').value = '';
+      setKasirView(true);
+    }catch(error){ showError(err, error.message); }
+    finally{ setBusy(btn, false); }
+  }
+
+  async function logoutKasir(){
+    try{ await api('cashierLogout'); }catch(e){}
+    setKasirView(false);
+    document.getElementById('kasirMemberInfo').style.display = 'none';
+    document.getElementById('kasirResult').style.display = 'none';
+  }
+
+  async function cariMember(btn){
+    const hp = document.getElementById('k-hp').value.trim();
+    const box = document.getElementById('kasirMemberInfo');
+    setBusy(btn, true);
+    try{
+      const data = await api('find', { phone: hp });
+      const m = data.member;
+      kasirTargetPhone = m.hp;
+      box.style.display = 'block';
+      box.innerHTML = `<div class="kmn">${escapeHtml(m.nama)}</div><div class="kms">Saldo saat ini: ${m.saldo} coin</div>`;
+    }catch(error){
+      if(error.status === 401){ setKasirView(false); return; }
+      box.style.display = 'block';
+      box.innerHTML = `<span class="kms">${escapeHtml(error.message)}</span>`;
+      kasirTargetPhone = null;
+    }
+    finally{ setBusy(btn, false); }
+  }
+
+  async function prosesPembelian(btn){
+    const nominal = parseInt(document.getElementById('k-nominal').value, 10);
+    const result = document.getElementById('kasirResult');
+    if(!kasirTargetPhone){
+      result.style.display = 'block';
+      result.textContent = 'Cari member yang valid dulu sebelum proses pembelian.';
+      return;
+    }
+    if(!nominal || nominal <= 0){
+      result.style.display = 'block';
+      result.textContent = 'Masukkan nominal pembelian yang valid.';
+      return;
+    }
+    setBusy(btn, true);
+    try{
+      const data = await api('purchase', { phone: kasirTargetPhone, amount: nominal });
+      const m = data.member;
+      result.style.display = 'block';
+      result.innerHTML = `Berhasil! ${escapeHtml(m.nama)} mendapat <b>+${data.earned} coin</b>. Saldo sekarang: ${m.saldo} coin.`;
+      document.getElementById('kasirMemberInfo').innerHTML = `<div class="kmn">${escapeHtml(m.nama)}</div><div class="kms">Saldo saat ini: ${m.saldo} coin</div>`;
+      document.getElementById('k-nominal').value = '';
+      if(currentPhone === kasirTargetPhone){ currentMember = m; renderDashboard(); }
+    }catch(error){
+      if(error.status === 401){ setKasirView(false); return; }
+      result.style.display = 'block';
+      result.textContent = error.message;
+    }
+    finally{ setBusy(btn, false); }
+  }
+
+  // ----- pulihkan sesi login kalau sebelumnya sudah pernah masuk -----
+  checkKasirSession();
+  if(currentPhone) openDashboard();
+</script>
+
+</body>
+</html>

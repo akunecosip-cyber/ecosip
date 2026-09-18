@@ -1,0 +1,9 @@
+{
+  "name": "ecosip-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website member ECOSIP - daftar, kumpulkan coin, tukar reward, panel kasir",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
